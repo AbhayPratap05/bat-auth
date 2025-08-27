@@ -13,7 +13,7 @@ connectDB();
 
 const allowedOrigins = [
     'http://localhost:5173',
-    'https://batauthsys.netlify.app/'
+    'https://batauthsys.netlify.app'
 ];
 
 app.use(express.json());
