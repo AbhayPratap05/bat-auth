@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Share+Tech+Mono&display=swap');
+@import "tailwindcss";
+
+* {
+    font-family: "Outfit", sans-serif;
+    color: aliceblue;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #111;
+    width: 100%;
+    height: 100%;
+}
+
+#root {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.force-neon{
+    color: #00fff7 !important;
+}
+
+.terminal-text{
+    font-family: 'Google Sans Code', 'Share Tech Mono', monospace !important;
+}
+
+.dock{
+    position: fixed;
+    bottom: 5px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 1000;
+}
