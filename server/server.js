@@ -19,7 +19,13 @@ const allowedOrigins = [
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: true,
+    origin(origin, callback) {
+      // allow tools like Postman (no origin) and whitelisted sites
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('CORS policy: Origin not allowed'));
+    },
     credentials: true
 }));
 
