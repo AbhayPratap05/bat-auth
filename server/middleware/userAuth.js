@@ -4,7 +4,7 @@ const userAuth = async (req, res, next) => {
     const {token} = req.cookies;
 
     if(!token) {
-        return res.status(401).json({ success: false, message: "Unauthorized access!" });
+        return res.json({success: false, message: "Unauthorized access!"});
     }
 
     try {
@@ -14,14 +14,13 @@ const userAuth = async (req, res, next) => {
             req.userId = tokenDecode.id;
         }
         else{
-            return res.status(401).json({ success: false, message: "Unauthorized access!" });
+            return res.json({success: false, message: "Unauthorized access!"});
         }
 
         next();
 
     } catch (error) {
-        console.error("JWT verify error:", error.message);
-        return res.status(401).json({ success: false, message: error.message });
+        return res.json({success: false, message: error.message});
     }
 }   
 

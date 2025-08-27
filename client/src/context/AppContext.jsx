@@ -11,17 +11,22 @@ export const AppContextProvider = (props)=>{
     const [isLoggedin, setIsLoggedin] = useState(false);
     const [userData, setUserData] = useState(null);
 
-    const getAuthState = async ()=>{
+    const getAuthState = async () => {
         try {
-            const {data} = await axios.post(backendUrl + '/api/auth/is-auth')
-            if(data.success){
-                setIsLoggedin(true)
-                getUserData()
-            }
+          const { data } = await axios.post(backendUrl + '/api/auth/is-auth');
+          if (data.success) {
+            setIsLoggedin(true);
+            getUserData();
+          } else {
+            setIsLoggedin(false);
+            setUserData(null);
+          }
         } catch (error) {
-            toast.error(error.message)
+          console.error("Auth check failed:", error);
+          setIsLoggedin(false);
+          setUserData(null);
         }
-    }
+      };
 
     const getUserData = async ()=>{
         try {
