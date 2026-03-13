@@ -34,16 +34,17 @@ export const register = async (req, res)=>{
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
-        //Sending welcome email
+        //Sending welcome email (non-blocking — don't fail registration if mail fails)
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: email,
             subject: 'Welcome to the Shadows!',
-            // text: `Welcome ${name},\n\nThank you for registering with us! We are excited to have you on board.\nYour account is created successfully with email: ${email}\n\nBest regards,\nAbhayPratap Team`
             html: WELCOME_TEMPLATE.replace('{{email}}', email)
         }
 
-        await transporter.sendMail(mailOptions);
+        transporter.sendMail(mailOptions).catch(err => {
+            console.error('Welcome email failed:', err.message);
+        });
 
         return res.json({success: true, message: "Registration successful!"});
 
@@ -132,7 +133,10 @@ export const sendVerifyOtp = async (req, res) => {
             html: VERIFY_ACCOUNT_TEMPLATE.replace('{{OTP}}', otp)
         }
 
-        await transporter.sendMail(mailOptions);
+        await transporter.sendMail(mailOptions).catch(err => {
+            console.error('Verify OTP email failed:', err.message);
+            throw new Error('Failed to send OTP email. Please try again later.');
+        });
 
         return res.json({success: true, message: "OTP sent to your email!"});
 
@@ -212,7 +216,10 @@ export const sendResetOtp = async (req, res) => {
             html: PASSWORD_RESET_TEMPLATE.replace('{{OTP}}', otp)
         }
 
-        await transporter.sendMail(mailOptions);
+        await transporter.sendMail(mailOptions).catch(err => {
+            console.error('Reset OTP email failed:', err.message);
+            throw new Error('Failed to send reset OTP email. Please try again later.');
+        });
 
         return res.json({success: true, message:"Password reset OTP sent to your email!"});
 
