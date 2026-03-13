@@ -3,15 +3,36 @@ import nodemailer from 'nodemailer';
 const smtpHost = process.env.SMTP_HOST || 'smtp-relay.brevo.com';
 const smtpPort = Number(process.env.SMTP_PORT || 587);
 const smtpSecure = process.env.SMTP_SECURE === 'true' || smtpPort === 465;
+const smtpUser = process.env.SMTP_USER;
+const smtpPass = process.env.SMTP_PASS;
 
 const transporter = nodemailer.createTransport({
     host: smtpHost,
     port: smtpPort,
     secure: smtpSecure,
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+    user: smtpUser,
+    pass: smtpPass,
     },
   });
 
-  export default transporter;
+export const verifyTransporter = async () => {
+  try {
+    if (!smtpUser || !smtpPass) {
+      console.error('SMTP credentials missing: set SMTP_USER and SMTP_PASS');
+      return;
+    }
+
+    await transporter.verify();
+    console.log(`SMTP ready (${smtpHost}:${smtpPort}) as ${smtpUser}`);
+  } catch (error) {
+    console.error('SMTP verification failed:', {
+      message: error.message,
+      code: error.code,
+      response: error.response,
+      command: error.command,
+    });
+  }
+};
+
+export default transporter;
