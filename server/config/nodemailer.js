@@ -12,32 +12,13 @@ const transporter = nodemailer.createTransport({
     host: smtpHost,
     port: smtpPort,
     secure: smtpSecure,
-  family: 4,
-  connectionTimeout: smtpConnectionTimeout,
-  greetingTimeout: smtpGreetingTimeout,
+    family: 4,
+    connectionTimeout: smtpConnectionTimeout,
+    greetingTimeout: smtpGreetingTimeout,
     auth: {
-    user: smtpUser,
-    pass: smtpPass,
+        user: smtpUser,
+        pass: smtpPass,
     },
-  });
-
-export const verifyTransporter = async () => {
-  try {
-    if (!smtpUser || !smtpPass) {
-      console.error('SMTP credentials missing: set SMTP_USER and SMTP_PASS');
-      return;
-    }
-
-    await transporter.verify();
-    console.log(`SMTP ready (${smtpHost}:${smtpPort}) as ${smtpUser}`);
-  } catch (error) {
-    console.error('SMTP verification failed:', {
-      message: error.message,
-      code: error.code,
-      response: error.response,
-      command: error.command,
-    });
-  }
-};
+});
 
 export default transporter;

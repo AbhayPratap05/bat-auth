@@ -3,7 +3,7 @@ import cors from "cors";
 import 'dotenv/config';
 import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js";
-import { verifyTransporter } from "./config/nodemailer.js";
+import { verifyMailProvider } from "./config/mailer.js";
 import authRouter from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 
@@ -37,5 +37,5 @@ app.use('/api/user', userRouter);
 
 app.listen(port, ()=> {
   console.log(`server started on port: ${port}`);
-  verifyTransporter();
+  verifyMailProvider();
 });

@@ -1,10 +1,8 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import userModel from '../models/userModel.js';
-import transporter from '../config/nodemailer.js';
+import { sendEmail } from '../config/mailer.js';
 import { WELCOME_TEMPLATE, PASSWORD_RESET_TEMPLATE, VERIFY_ACCOUNT_TEMPLATE } from '../config/emailTemplates.js';
-
-const getFromEmail = () => process.env.SENDER_EMAIL || process.env.SMTP_USER;
 
 export const register = async (req, res)=>{
     const {name, email, password} = req.body;
@@ -36,14 +34,11 @@ export const register = async (req, res)=>{
         });
 
         //Sending welcome email (non-blocking — don't fail registration if mail fails)
-        const mailOptions = {
-            from: getFromEmail(),
+        sendEmail({
             to: email,
             subject: 'Welcome to the Shadows!',
             html: WELCOME_TEMPLATE.replace('{{email}}', email)
-        }
-
-        transporter.sendMail(mailOptions).catch(err => {
+        }).catch(err => {
             console.error('Welcome email failed:', {
                 message: err.message,
                 code: err.code,
@@ -131,15 +126,11 @@ export const sendVerifyOtp = async (req, res) => {
 
         await user.save();
 
-        const mailOptions = {
-            from: getFromEmail(),
+        await sendEmail({
             to: user.email,
             subject: 'Verify Your Account',
-            // text: `Your verification OTP is ${otp}.\nOTP is valid for 10 minutes.`
             html: VERIFY_ACCOUNT_TEMPLATE.replace('{{OTP}}', otp)
-        }
-
-        await transporter.sendMail(mailOptions).catch(err => {
+        }).catch(err => {
             console.error('Verify OTP email failed:', {
                 message: err.message,
                 code: err.code,
@@ -219,15 +210,11 @@ export const sendResetOtp = async (req, res) => {
 
         await user.save();
 
-        const mailOptions = {
-            from: getFromEmail(),
+        await sendEmail({
             to: user.email,
             subject: 'Reset Your Password',
-            // text: `Your password reset OTP is ${otp}.\nIt is valid for 10 minutes.`
             html: PASSWORD_RESET_TEMPLATE.replace('{{OTP}}', otp)
-        }
-
-        await transporter.sendMail(mailOptions).catch(err => {
+        }).catch(err => {
             console.error('Reset OTP email failed:', {
                 message: err.message,
                 code: err.code,
