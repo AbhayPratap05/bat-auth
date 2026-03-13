@@ -11,7 +11,6 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 await connectDB();
-await verifyTransporter();
 
 const allowedOrigins = [
     'http://localhost:5173',
@@ -36,4 +35,7 @@ app.get('/', (req,res)=> res.send('API Working!'));
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 
-app.listen(port, ()=> console.log(`server started on port: ${port}`));
+app.listen(port, ()=> {
+  console.log(`server started on port: ${port}`);
+  verifyTransporter();
+});
